@@ -1,10 +1,3 @@
-import customtkinter
-from utilities import center_window, QuadraticEquation
-
-customtkinter.set_appearance_mode("system")  # Set the theme (Dark, Light) upon the system preference.
-customtkinter.set_default_color_theme("green")  # Set Default theme to green (A builtin color-theme from customtkinter)
-
-# Dictionary to hold our main configuration
 """
 Quadratic Equations Solver
 Group 2:
@@ -14,22 +7,33 @@ Omar Al-Bayyebi
 Mazen Al-Ghamdi
 Hashem Al-Saihati
 """
+import customtkinter
+from utilities import center_window, QuadraticEquation
+
+customtkinter.set_appearance_mode("system")  # Set the theme (Dark, Light) upon the system preference.
+customtkinter.set_default_color_theme("green")  # Set Default theme to green (A builtin color-theme from customtkinter)
+
+# Dictionary to hold our main configuration
 config = {
+    "windowTitle": "Math: Quadratic Equations",
+    "topLevelTitle": "Math: Quadratic Equations | Graph",
     "title": "Quadratic Equations Solver",
     "description": "Our app helps you solve an equation of the form ax^2 + bx + c = 0",
     "appWidth": 900,
     "appHeight": 600,
     "topLevel": {"appWidth": 700, "appHeight": 600}
 }
-
 print(config['title'])
 
-# Future Update: Since this class is small we remove it
+
 class ToplevelWindow(customtkinter.CTkToplevel):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         center_window(self, config["topLevel"]["appWidth"], config["topLevel"]["appHeight"])
+        self.title(config["topLevelTitle"])
+        self.after(100, self.lift)  # Workaround for bug where main window takes
+        # focus (https://github.com/TomSchimansky/CustomTkinter/issues/1486).
 
 
 class MyFrame(customtkinter.CTkFrame):
@@ -75,8 +79,6 @@ class MyFrame(customtkinter.CTkFrame):
     def open_toplevel(self):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
             self.toplevel_window = ToplevelWindow(self)  # create window if its None or destroyed
-            self.toplevel_window.after(100, self.toplevel_window.lift)  # Workaround for bug where main window takes
-            # focus (https://github.com/TomSchimansky/CustomTkinter/issues/1486).
         else:
             self.toplevel_window.focus()  # if window exists focus it
 
@@ -86,34 +88,28 @@ class MyFrame(customtkinter.CTkFrame):
             # We use QuadraticEquation class from utilities file
             quadratic = QuadraticEquation(a=self.entry_a.get(), b=self.entry_b.get(),
                                           c=self.entry_c.get())
-            solutions = quadratic.solve()  # Return tuple (x1, x2) | or (x1) | or (None, None)
-            if all(el is None for el in solutions):  # Check if all values inside tuple are None -> display No Solution.
-                self.label_solutions.configure(text="No solutions", text_color="#db324d")
-            else:
-                text = "The solutions are: "
-                for i in solutions:
-                    text += str(i) + ", "
+            solutions = quadratic.solve()
+            text = "The solutions are: "
+            for i in solutions:
+                text += str(i) + ", "
                 text = text[:-2]  # This is to remove the last comma. (Due to the above for loop)
                 self.label_solutions.configure(text=text, text_color="#009900")
-        except ValueError:
-            # This except block occur only when the entered values are not integers
-            # or a user forgot to fill one of the fields.
+
+        except ValueError as err:
+            # This except block occur when there is an error
+            # Such as: A coefficent is 0, or provided entries are not integers or no solution.
             self.label_solutions.configure(
-                text="Invalid Value: Please enter only numbers \n and make sure to fill all fields",
+                text=err,
                 text_color="#db324d")
 
     def graph_equation(self):
         try:
             quadratic = QuadraticEquation(a=self.entry_a.get(), b=self.entry_b.get(), c=self.entry_c.get())
-            solutions = quadratic.solve()
-            if all(el is None for el in solutions):  # Check if all values inside tuple are None -> display No Solution.
-                self.label_solutions.configure(text="Unable to plot: No Solutions", text_color="#db324d")
-            else:
-                self.open_toplevel()
-                quadratic.plot(self.toplevel_window)
-        except ValueError:
+            quadratic.solve()
+            quadratic.plot(self.toplevel_window)
+        except ValueError as err:
             self.label_solutions.configure(
-                text="Invalid Value: Please enter only numbers \n and make sure to fill all fields",
+                text=err,
                 text_color="#db324d")
 
 
@@ -121,7 +117,7 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Math: Quadratic Equations")  # Setting window title
+        self.title(config["windowTitle"])  # Setting window title
         center_window(self, config["appWidth"],
                       config["appHeight"])  # A utility function that Sets geometry and center window
 
@@ -131,8 +127,8 @@ class App(customtkinter.CTk):
                                                   font=customtkinter.CTkFont(size=30, weight="bold"))
         self.title_label.grid(row=0, column=0, padx=10, pady=(40, 0), sticky="ew", columnspan=2)
         self.description_label = customtkinter.CTkLabel(self,
-                                                   text=config["description"],
-                                                   font=customtkinter.CTkFont(size=18))
+                                                        text=config["description"],
+                                                        font=customtkinter.CTkFont(size=18))
         self.description_label.grid(row=1, column=0, padx=10, pady=(0, 20), sticky="ew", columnspan=2)
 
         self.theme_label = customtkinter.CTkLabel(self, text="Change theme:",
