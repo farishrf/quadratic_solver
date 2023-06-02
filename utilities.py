@@ -14,17 +14,20 @@ class QuadraticEquation:
             self.b = float(b)
             self.c = float(c)
         except ValueError:
-            raise ValueError("Coefficients must be number")
+            raise ValueError("Invalid Entry: Coefficients must be number")
 
+    """
+        Return tuple (x1, x2) | or (x1) | or err (no solution).
+    """
     def solve(self):
         if self.a == 0:
-            raise ValueError("Coefficient *a* cannot be zero")
+            raise ValueError("Invalid Entry: Coefficient a cannot be zero")
 
         self.discriminant = (self.b ** 2) - (4 * self.a * self.c)
         denominator = 2 * self.a
         # No Real solutions only complex solutions:
         if self.discriminant < 0:
-            return None, None
+            raise ValueError("No solutions")
         elif self.discriminant == 0:
             return -self.b / denominator,  # One solution returned as a single tuple.
 
@@ -39,7 +42,7 @@ class QuadraticEquation:
     def plot(self, topLevelWindow):
         if self.discriminant < 0:
             # We can't plot! No solutions!
-            return False
+            raise ValueError("Unable to plot: No Solutions")
         elif self.discriminant == 0:
             x = -self.b / (2 * self.a)
 
@@ -68,10 +71,10 @@ class QuadraticEquation:
                 I calculate the max(7, -2) +1 ---> will give me 8.0
                 As we can see, this allows us to better visualize the domain.
             """
-            xmin = min(self.x1, self.x2) - 1
-            xmax = max(self.x1, self.x2) + 1
+            x_min = min(self.x1, self.x2) - 1
+            x_max = max(self.x1, self.x2) + 1
 
-            x = np.linspace(xmin, xmax, 100)  # Generating the domain with numpy linspace
+            x = np.linspace(x_min, x_max, 100)  # Generating the domain with numpy linspace
             y = (self.a * x ** 2) + self.b * x + self.c  # Range
 
             y = np.around(y, decimals=2)  # This rounds the Y to the nearest 2 decimal places, to avoid showing
@@ -93,17 +96,17 @@ class QuadraticEquation:
             ax.set_title('Quadratic Equation', fontsize=16)
 
             # Adjust axis limits and tick marks
-            ax.set_xlim([xmin, xmax])
-            xticks = np.arange(xmin, xmax + 1)
-            ax.set_xticks(xticks)
-            ax.set_xticklabels(xticks, fontsize=12)
-            yticks = np.arange(min(y), max(y) + 1)
-            ax.set_yticks(yticks)
-            ax.set_yticklabels(yticks, fontsize=12)
+            ax.set_xlim([x_min, x_max])
+            x_ticks = np.arange(x_min, x_max + 1)
+            ax.set_xticks(x_ticks)
+            ax.set_xticklabels(x_ticks, fontsize=12)
+            y_ticks = np.arange(min(y), max(y) + 1)
+            ax.set_yticks(y_ticks)
+            ax.set_yticklabels(y_ticks, fontsize=12)
 
             canvas = FigureCanvasTkAgg(fig, master=topLevelWindow)
             canvas.draw()
-            canvas.get_tk_widget().pack()
+            canvas.get_tk_widget().pack(fill="both", expand=True)
 
 
 # Taken from Google (How to center a tkinter window).
