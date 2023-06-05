@@ -61,7 +61,7 @@ class QuadraticEquation:
             ax.set_title('Quadratic Equation with One Root')
             canvas = FigureCanvasTkAgg(fig, master=topLevelWindow)
             canvas.draw()
-            canvas.get_tk_widget().pack()
+            canvas.get_tk_widget().pack(fill="both", expand=True)
         else:
 
             """
@@ -76,7 +76,6 @@ class QuadraticEquation:
 
             x = np.linspace(x_min, x_max, 100)  # Generating the domain with numpy linspace
             y = (self.a * x ** 2) + self.b * x + self.c  # Range
-
             y = np.around(y, decimals=2)  # This rounds the Y to the nearest 2 decimal places, to avoid showing
             # 7.009345134851345134 (Basically large decimal places).
             # Plot
@@ -106,7 +105,7 @@ class QuadraticEquation:
 
             canvas = FigureCanvasTkAgg(fig, master=topLevelWindow)
             canvas.draw()
-            canvas.get_tk_widget().pack()
+            canvas.get_tk_widget().pack(fill="both", expand=True)
 
 
 # Taken from Google (How to center a tkinter window).
