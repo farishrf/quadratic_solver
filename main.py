@@ -104,6 +104,7 @@ class MyFrame(customtkinter.CTkFrame):
 
     def graph_equation(self):
         try:
+            self.open_toplevel()
             quadratic = QuadraticEquation(a=self.entry_a.get(), b=self.entry_b.get(), c=self.entry_c.get())
             quadratic.solve()
             quadratic.plot(self.toplevel_window)

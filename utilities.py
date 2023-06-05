@@ -106,7 +106,7 @@ class QuadraticEquation:
 
             canvas = FigureCanvasTkAgg(fig, master=topLevelWindow)
             canvas.draw()
-            canvas.get_tk_widget().pack(fill="both", expand=True)
+            canvas.get_tk_widget().pack()
 
 
 # Taken from Google (How to center a tkinter window).
