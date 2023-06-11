@@ -2,6 +2,7 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from fractions import Fraction
 
 
 class QuadraticEquation:
@@ -29,7 +30,7 @@ class QuadraticEquation:
         if self.discriminant < 0:
             raise ValueError("No solutions")
         elif self.discriminant == 0:
-            return -self.b / denominator,  # One solution returned as a single tuple.
+            return Fraction(-self.b / denominator).limit_denominator(),  # One solution returned as a single tuple.
 
         # Many solutions
         # We're just applying the quadratic formula here -b+-sqrt(b^2-4ac)/2a
@@ -37,7 +38,7 @@ class QuadraticEquation:
         self.x1 = (-self.b + discriminant) / denominator
         self.x2 = (-self.b - discriminant) / denominator
 
-        return self.x1, self.x2
+        return Fraction(self.x1).limit_denominator(), Fraction(self.x2).limit_denominator()
 
     def plot(self, topLevelWindow):
         if self.discriminant < 0:
