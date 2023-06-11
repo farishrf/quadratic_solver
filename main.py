@@ -92,8 +92,8 @@ class MyFrame(customtkinter.CTkFrame):
             text = "The solutions are: "
             for i in solutions:
                 text += str(i) + ", "
-                text = text[:-2]  # This is to remove the last comma. (Due to the above for loop)
-                self.label_solutions.configure(text=text, text_color="#009900")
+            text = text[:-2]  # This is to remove the last comma. (Due to the above for loop)
+            self.label_solutions.configure(text=text, text_color="#009900")
 
         except ValueError as err:
             # This except block occur when there is an error
